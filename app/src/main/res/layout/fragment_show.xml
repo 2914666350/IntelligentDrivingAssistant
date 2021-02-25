@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutDisplay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imgDoorLR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/imgDoorLF"
+        app:layout_constraintTop_toBottomOf="@+id/imgDoorLF"
+         />
+
+    <ImageView
+        android:id="@+id/imgDoorLF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_Car"
+        app:layout_constraintTop_toTopOf="@+id/imageView_Car"
+         />
+
+    <ImageView
+        android:id="@+id/imgDoorReal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView_Car"
+        app:layout_constraintStart_toStartOf="@+id/imageView_Car"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_Car"
+         />
+
+    <ImageView
+        android:id="@+id/imgDoorRF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="80dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView_Car"
+        app:layout_constraintTop_toTopOf="@+id/imageView_Car"
+        />
+
+    <TextView
+        android:id="@+id/textView_pressure_LR"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:background="#CDDC39"
+        android:text="@string/car_pressure"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView_Car"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_Car" />
+
+    <TextView
+        android:id="@+id/textView_pressure_LF"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
+        android:background="#CDDC39"
+        android:text="@string/car_pressure"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_Car"
+        app:layout_constraintTop_toTopOf="@+id/imageView_Car" />
+
+    <TextView
+        android:id="@+id/textView_pressure_RF"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:background="#CDDC39"
+        android:text="@string/car_pressure"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView_Car"
+        app:layout_constraintTop_toTopOf="@+id/imageView_Car" />
+
+    <ImageView
+        android:id="@+id/imageView_Car"
+        android:layout_width="105dp"
+        android:layout_height="214dp"
+        android:rotation="90"
+        android:scaleType="center"
+        android:scaleX="2"
+        android:scaleY="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/textView_pressure_RR"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="32dp"
+        android:background="#CDDC39"
+        android:text="@string/car_pressure"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView_Car"
+        app:layout_constraintStart_toEndOf="@+id/imageView_Car" />
+
+    <TextView
+        android:id="@+id/textView_start_state"
+        android:layout_width="148dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="24dp"
+        android:background="#FFEB3B"
+        android:text="@string/car_state"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgDoorReal" />
+
+    <ImageView
+        android:id="@+id/imageView_start_state"
+        android:layout_width="48dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="#FFEB3B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.24"
+        app:layout_constraintStart_toEndOf="@+id/textView_start_state"
+        app:layout_constraintTop_toTopOf="@+id/textView_start_state"
+         />
+
+    <TextView
+        android:id="@+id/textView_window"
+        android:layout_width="112dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="#CDDC39"
+        android:text="@string/car_window_state"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_start_state" />
+
+    <ImageView
+        android:id="@+id/imageView_window"
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:background="#FFEB3B"
+        app:layout_constraintStart_toEndOf="@+id/textView_window"
+        app:layout_constraintTop_toTopOf="@+id/textView_window"
+         />
+
+    <TextView
+        android:id="@+id/textView_lock"
+        android:layout_width="95dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="24dp"
+        android:background="#CDDC39"
+        android:text="@string/car_lock_state"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView_window"
+        app:layout_constraintTop_toTopOf="@+id/textView_window" />
+
+    <ImageView
+        android:id="@+id/imageView_lock"
+        android:layout_width="33dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:background="#72DCEA"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView_lock"
+        app:layout_constraintTop_toTopOf="@+id/textView_lock"
+         />
+
+    <TextView
+        android:id="@+id/textView_remain_power"
+        android:layout_width="114dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="#FF9800"
+        android:text="@string/car_remain_power"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_window" />
+
+    <TextView
+        android:id="@+id/textView_power"
+        android:layout_width="70dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="16dp"
+        android:background="#0FFA0D"
+        android:text="@string/car_power"
+        android:textAlignment="textEnd"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/textView_remain_power"
+        app:layout_constraintTop_toTopOf="@+id/textView_remain_power" />
+
+    <TextView
+        android:id="@+id/textView_travel_num"
+        android:layout_width="157dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#03A9F4"
+        android:text="@string/car_travel_num"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_remain_power"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView_kilometer"
+        android:layout_width="90dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:background="#03A9F4"
+        android:text="@string/car_kilometer"
+        android:textAlignment="textEnd"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/textView_travel_num"
+        app:layout_constraintTop_toTopOf="@+id/textView_travel_num" />
+
+    <ImageView
+        android:id="@+id/imgDoorRR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/imgDoorRF"
+        app:layout_constraintTop_toBottomOf="@+id/imgDoorRF"
+         />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

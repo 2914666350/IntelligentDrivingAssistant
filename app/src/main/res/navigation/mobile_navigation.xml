@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.intelligentdrivingassistant.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_music"
+        android:name="com.example.intelligentdrivingassistant.music.MusicFragment"
+        android:label="@string/title_find"
+        tools:layout="@layout/fragment_music" />
+
+    <fragment
+        android:id="@+id/navigation_navigation"
+        android:name="com.example.intelligentdrivingassistant.navigation.NavFragment"
+        android:label="@string/title_navigation"
+        tools:layout="@layout/fragment_navigation" />
+    <fragment
+        android:id="@+id/navigation_find"
+        android:name="com.example.intelligentdrivingassistant.find.FindFragment"
+        android:label="@string/title_find"
+        tools:layout="@layout/fragment_find"/>
+    <fragment
+        android:id="@+id/navigation_identity"
+        android:name="com.example.intelligentdrivingassistant.mine.MineFragment"
+        android:label="@string/title_mine"
+        tools:layout="@layout/fragment_mine" />
+</navigation>
