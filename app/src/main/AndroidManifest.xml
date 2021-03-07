@@ -34,7 +34,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IntelligentDrivingAssistant">
-        <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".ForgotPwdActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

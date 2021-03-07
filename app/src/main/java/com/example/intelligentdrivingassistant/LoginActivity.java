@@ -13,17 +13,25 @@ import android.content.Intent;
 import android.os.Handler;
 
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.textclassifier.TextLinks;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.http.AsyncHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.net.URLEncoder;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText name;//用户名
@@ -31,8 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;//登录按钮
     private TextView register;//注册
     private TextView forgetNum;//忘记密码
-    private myDatabaseHelper dbHelper;
-
+    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
 
-        dbHelper = myDatabaseHelper.getInstance(this);
+
 
 
         name = (EditText) findViewById(R.id.admin_login_activity_name_input);
@@ -48,33 +55,60 @@ public class LoginActivity extends AppCompatActivity {
         login = (Button) findViewById(R.id.admin_login_activity_login);
         register = (TextView) findViewById(R.id.admin_login_activity_register);
         forgetNum = (TextView) findViewById(R.id.admin_login_activity_forgetNum);
-
+        String userName = name.getText().toString().trim();
+        String passWord = password.getText().toString().trim();
         //跳转到登录过的管理员界面
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendRequestWithOkHttp();
+            }
+            private void sendRequestWithOkHttp(){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            OkHttpClient client=new OkHttpClient();
+                            RequestBody requestBody =new FormBody.Builder()
+                                    .add("username",userName)
+                                    .add("password",passWord)
+                                    .build();
+                            Request request=new Request.Builder()
+                                    .url("http://localhost:8001/login")
+                                    .post(requestBody)
+                                    .build();
+                            Response response = client.newCall(request).execute();
+                            String responseData =response.body().string();
+                            showLoginResultWithJSONObject(responseData);
 
-                String nameInfo = name.getText().toString();
-                String passwordInfo = password.getText().toString();
-                //从数据库中获取密码并判断是否相同
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                Cursor cursor = db.rawQuery("select password from admin where name=?", new String[]{nameInfo});
-                String pi = null;
-                if (cursor.moveToNext()) {
-                    pi = cursor.getString(cursor.getColumnIndex("password"));//获取密码
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+            private void showLoginResultWithJSONObject(String responseData) throws JSONException {
+                try{
+                    JSONArray jsonArray = new JSONArray(responseData);
+                    for(int i=0; i<jsonArray.length(); i++){
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String login=jsonObject.getString("login");
+                        String msg=jsonObject.getString("msg");
+                        if(login.equals("true")){
+                            Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_LONG).show();
+                        }
+                        Log.d(TAG, "login: "+login);
+                        Log.d(TAG, "msg: "+msg);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                //密码正确跳转到登录后的界面
-                if (passwordInfo.equals(pi)) {
-                    Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    cursor.close();
-                } else {
-                    Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-                }
-
-
             }
         });
+
 
         //自定义AlertDialog用于注册
         register.setOnClickListener(new View.OnClickListener() {
@@ -102,24 +136,19 @@ public class LoginActivity extends AppCompatActivity {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        String nameInfo = name.getText().toString();
+                        String firstPasswordInfo = firstPassword.getText().toString();
+                        String secondPasswordInfo = secondPassword.getText().toString();
                         String codeInfo = code.getText().toString();
                         //注册码要为10086
                         if (codeInfo.equals("10086")) {
-                            String nameInfo = name.getText().toString();
-                            String firstPasswordInfo = firstPassword.getText().toString();
-                            String secondPasswordInfo = secondPassword.getText().toString();
-                            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+
                             //检测密码是否为6个数字
                             if (firstPasswordInfo.matches("[0-9]{6}")) {
                                 // 两次密码是否相同
                                 if (firstPasswordInfo.equals(secondPasswordInfo)) {
-                                    Cursor cursor = db.rawQuery("select name from admin where name=? ", new String[]{nameInfo});
-                                    //用户是否存在
-                                    if (cursor.moveToNext()) {
-                                        Toast.makeText(LoginActivity.this, "该用户已存在", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        db.execSQL("insert into admin(name,password)values(?,?)", new String[]{nameInfo, firstPasswordInfo});
-                                    }
+                                        registerRequestWithOkHttp();
                                 } else {
                                     Toast.makeText(LoginActivity.this, "两次密码不相同", Toast.LENGTH_SHORT).show();
                                 }
@@ -131,7 +160,58 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(LoginActivity.this, "注册码错误", Toast.LENGTH_SHORT).show();
                         }
+
                     }
+                    private void registerRequestWithOkHttp(){
+                        String nameInfo = name.getText().toString();
+                        String firstPasswordInfo = firstPassword.getText().toString();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    OkHttpClient client=new OkHttpClient();
+                                    RequestBody requestBody =new FormBody.Builder()
+                                            .add("username",nameInfo)
+                                            .add("password",firstPasswordInfo)
+                                            .build();
+                                    Request request=new Request.Builder()
+                                            .url("http://localhost:8001/register")
+                                            .post(requestBody)
+                                            .build();
+                                    Response response = client.newCall(request).execute();
+                                    String responseData =response.body().string();
+                                    showRegisterResultWithJSONObject(responseData);
+                                    Toast.makeText(LoginActivity.this,"注册成功",Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "register:"+responseData);
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+                    private void showRegisterResultWithJSONObject(String responseData){
+                        try{
+                            JSONArray jsonArray = new JSONArray(responseData);
+                            for(int i=0; i<jsonArray.length(); i++){
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                String register=jsonObject.getString("register");
+                                String msg=jsonObject.getString("msg");
+                                if(register.equals("true")){
+                                    Toast.makeText(LoginActivity.this,"注册成功",Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "msg: "+msg);
+                                }else {
+                                    if(msg.equals("notOnly")){
+                                        Toast.makeText(LoginActivity.this,"用户名已存在",Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "msg: "+msg);
+                                    }
+                                }
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
                 });
 
 
