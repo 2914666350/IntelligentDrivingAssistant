@@ -19,7 +19,7 @@ import com.baidu.mapapi.walknavi.model.RouteGuideKind;
 
 public class BNaviGuideActivity extends Activity {
 
-    private final static String TAG = com.example.intelligentdrivingassistant.navigation.BNaviGuideActivity.class.getSimpleName();
+    private final static String TAG = BNaviGuideActivity.class.getSimpleName();
 
     private BikeNavigateHelper mNaviHelper;
 
@@ -43,7 +43,7 @@ public class BNaviGuideActivity extends Activity {
 
         mNaviHelper = BikeNavigateHelper.getInstance();
 
-        View view = mNaviHelper.onCreate(com.example.intelligentdrivingassistant.navigation.BNaviGuideActivity.this);
+        View view = mNaviHelper.onCreate(BNaviGuideActivity.this);
         if (view != null) {
             setContentView(view);
         }
@@ -63,7 +63,7 @@ public class BNaviGuideActivity extends Activity {
             }
         });
 
-        mNaviHelper.startBikeNavi(com.example.intelligentdrivingassistant.navigation.BNaviGuideActivity.this);
+        mNaviHelper.startBikeNavi(BNaviGuideActivity.this);
 
         mNaviHelper.setRouteGuidanceListener(this, new IBRouteGuidanceListener() {
             @Override

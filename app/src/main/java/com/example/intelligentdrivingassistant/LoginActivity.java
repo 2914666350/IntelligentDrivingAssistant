@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 
+import android.os.Looper;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +24,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.intelligentdrivingassistant.data.Result;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -40,7 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView register;//注册
     private TextView forgetNum;//忘记密码
     private static final String TAG = "LoginActivity";
-
+    public static final MediaType JSON
+            = MediaType.get("application/json; charset=utf-8");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,13 +59,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        name = (EditText) findViewById(R.id.admin_login_activity_name_input);
-        password = (EditText) findViewById(R.id.admin_login_activity_password_input);
-        login = (Button) findViewById(R.id.admin_login_activity_login);
-        register = (TextView) findViewById(R.id.admin_login_activity_register);
-        forgetNum = (TextView) findViewById(R.id.admin_login_activity_forgetNum);
-        String userName = name.getText().toString().trim();
-        String passWord = password.getText().toString().trim();
+        name = findViewById(R.id.admin_login_activity_name_input);
+        password = findViewById(R.id.admin_login_activity_password_input);
+        login = findViewById(R.id.admin_login_activity_login);
+        register = findViewById(R.id.admin_login_activity_register);
+        forgetNum = findViewById(R.id.admin_login_activity_forgetNum);
+
         //跳转到登录过的管理员界面
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,18 +76,19 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try{
-                            OkHttpClient client=new OkHttpClient();
-                            RequestBody requestBody =new FormBody.Builder()
-                                    .add("username",userName)
-                                    .add("password",passWord)
-                                    .build();
-                            Request request=new Request.Builder()
-                                    .url("http://localhost:8001/login")
-                                    .post(requestBody)
-                                    .build();
-                            Response response = client.newCall(request).execute();
-                            String responseData =response.body().string();
+                            String userName = name.getText().toString();
+                            String passWord = password.getText().toString();
+                            Log.d(TAG, "onCreate: "+userName+","+passWord);
+                            String json="{\"userName\": \"1\",\"passWord\":\"2\"}";
+                            JSONObject jo=new JSONObject(json);
+                            jo.put("userName",userName);
+                            jo.put("passWord",passWord);
+                            String loginUrl="http://172.19.66.55:8001/deptlogin/login";
+
+                            String responseData=post(loginUrl,jo.toString());
+                            Log.d(TAG, "run: "+jo.toString());
                             showLoginResultWithJSONObject(responseData);
+                            Log.d(TAG, "run: "+responseData);
 
                         }catch (Exception e){
                             e.printStackTrace();
@@ -88,21 +97,27 @@ public class LoginActivity extends AppCompatActivity {
                 }).start();
             }
             private void showLoginResultWithJSONObject(String responseData) throws JSONException {
-                try{
-                    JSONArray jsonArray = new JSONArray(responseData);
-                    for(int i=0; i<jsonArray.length(); i++){
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String login=jsonObject.getString("login");
-                        String msg=jsonObject.getString("msg");
-                        if(login.equals("true")){
-                            Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+                try {
+
+                        String login = responseData.substring(14,18);
+                        String message = responseData.substring(28);
+//                    for(int i=0; i<jsonArray.length(); i++){
+//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                        String login=jsonObject.getString("status");
+//                        String msg=jsonObject.getString("message");
+                        if (login.equals("true")) {
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                        }else{
-                            Toast.makeText(LoginActivity.this,msg,Toast.LENGTH_LONG).show();
+                        } else {
+                            Looper.prepare();
+                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                            Looper.loop();
                         }
-                        Log.d(TAG, "login: "+login);
-                        Log.d(TAG, "msg: "+msg);
-                    }
+
+                        Log.d(TAG, "login: " + login);
+                        Log.d(TAG, "msg: " + message);
+//
+                        Log.d(TAG, "showLoginResultWithJSONObject: pass");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -170,19 +185,24 @@ public class LoginActivity extends AppCompatActivity {
                             public void run() {
                                 try{
                                     OkHttpClient client=new OkHttpClient();
-                                    RequestBody requestBody =new FormBody.Builder()
-                                            .add("username",nameInfo)
-                                            .add("password",firstPasswordInfo)
-                                            .build();
-                                    Request request=new Request.Builder()
-                                            .url("http://localhost:8001/register")
-                                            .post(requestBody)
-                                            .build();
-                                    Response response = client.newCall(request).execute();
-                                    String responseData =response.body().string();
-                                    showRegisterResultWithJSONObject(responseData);
-                                    Toast.makeText(LoginActivity.this,"注册成功",Toast.LENGTH_LONG).show();
-                                    Log.d(TAG, "register:"+responseData);
+                                    String json="{\"userName\": \"1\",\"passWord\":\"2\"}";
+                                    JSONObject jo=new JSONObject(json);
+                                    jo.put("userName",nameInfo);
+                                    jo.put("passWord",firstPasswordInfo);
+                                    String loginUrl="http://172.19.90.191:8001/dept/add";
+                                    Log.d(TAG, "run: "+nameInfo+","+firstPasswordInfo);
+                                    String responseData=post(loginUrl,jo.toString());
+                                    Log.d(TAG, "run: "+jo.toString());
+                                    Log.d(TAG, "rigsterResponse: "+responseData);
+                                    if(responseData.equals("true")){
+                                        Toast.makeText(LoginActivity.this,"注册成功",Toast.LENGTH_LONG).show();
+                                        Log.d(TAG, "msg: 注册成功");
+                                    }else {
+                                        Looper.prepare();
+                                        Toast.makeText(LoginActivity.this,"用户名已存在",Toast.LENGTH_LONG).show();
+                                        Looper.loop();
+                                        Log.d(TAG, "msg: 用户名已存在");
+                                    }
 
                                 }catch (Exception e){
                                     e.printStackTrace();
@@ -190,27 +210,25 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }).start();
                     }
-                    private void showRegisterResultWithJSONObject(String responseData){
-                        try{
-                            JSONArray jsonArray = new JSONArray(responseData);
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                String register=jsonObject.getString("register");
-                                String msg=jsonObject.getString("msg");
-                                if(register.equals("true")){
-                                    Toast.makeText(LoginActivity.this,"注册成功",Toast.LENGTH_LONG).show();
-                                    Log.d(TAG, "msg: "+msg);
-                                }else {
-                                    if(msg.equals("notOnly")){
-                                        Toast.makeText(LoginActivity.this,"用户名已存在",Toast.LENGTH_LONG).show();
-                                        Log.d(TAG, "msg: "+msg);
-                                    }
-                                }
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
+//                    private void showRegisterResultWithJSONObject(String responseData){
+//                        try{
+//                            JSONArray jsonArray = new JSONArray(responseData);
+//                            for(int i=0; i<jsonArray.length(); i++){
+//                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                String register=jsonObject.getString("register");
+//                                String msg=jsonObject.getString("msg");
+//                                if(register.equals("true")){
+//                                    Toast.makeText(LoginActivity.this,"注册成功",Toast.LENGTH_LONG).show();
+//                                    Log.d(TAG, "msg: "+msg);
+//                                }else {
+//                                        Toast.makeText(LoginActivity.this,"用户名已存在",Toast.LENGTH_LONG).show();
+//                                        Log.d(TAG, "msg: "+msg);
+//                                }
+//                            }
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//                    }
 
                 });
 
@@ -227,6 +245,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+    //okhttp 发送Post请求
+    String post(String url, String json) throws IOException {
+        OkHttpClient client=new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
     }
 }
 

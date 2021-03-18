@@ -15,7 +15,7 @@ public class BNaviDemoApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        com.example.intelligentdrivingassistant.navigation.ReflectHelper.unseal(base);
+        ReflectHelper.unseal(base);
     }
 
     @Override

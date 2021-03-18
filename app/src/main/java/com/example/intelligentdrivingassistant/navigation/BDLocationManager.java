@@ -21,7 +21,7 @@ public class BDLocationManager {
     private BDLocationListener listener;
 
     private static class Holder {
-        private static com.example.intelligentdrivingassistant.navigation.BDLocationManager INSTANCE = new com.example.intelligentdrivingassistant.navigation.BDLocationManager();
+        private static BDLocationManager INSTANCE = new BDLocationManager();
     }
 
     private BDLocationManager() {
@@ -29,7 +29,7 @@ public class BDLocationManager {
 
     }
 
-    public static com.example.intelligentdrivingassistant.navigation.BDLocationManager getInstance() {
+    public static BDLocationManager getInstance() {
         return Holder.INSTANCE;
     }
 

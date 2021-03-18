@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.neusoft.alpine.teamsix.ui.navigation.NavigationFragment">
+    tools:context="com.example.intelligentdrivingassistant.navigation.NavigationFragment">
 
     <com.baidu.mapapi.map.MapView
         android:id="@+id/mapview"

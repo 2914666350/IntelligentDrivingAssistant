@@ -1,7 +1,9 @@
 package com.example.intelligentdrivingassistant.navigation;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -10,21 +12,21 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 
-import com.baidu.location.BDAbstractLocationListener;
-import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
 import com.baidu.mapapi.bikenavi.adapter.IBEngineInitListener;
 import com.baidu.mapapi.bikenavi.adapter.IBRoutePlanListener;
@@ -49,9 +51,8 @@ import com.baidu.mapapi.walknavi.model.WalkRoutePlanError;
 import com.baidu.mapapi.walknavi.params.WalkNaviLaunchParam;
 import com.baidu.mapapi.walknavi.params.WalkRouteNodeInfo;
 import com.example.intelligentdrivingassistant.R;
-
 import java.util.ArrayList;
-
+import com.baidu.location.*;
 import static android.content.Context.SENSOR_SERVICE;
 
 public class NavigationFragment extends Fragment implements SensorEventListener{
@@ -77,9 +78,9 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
     private MyLocationData locData;
     private float direction;
 
-    private final static String TAG = com.example.intelligentdrivingassistant.navigation.NavigationFragment.class.getSimpleName();
+    private final static String TAG = NavigationFragment.class.getSimpleName();
 
-    private MapView mMapView;
+    private MapView  mMapView;
     private BaiduMap mBaiduMap;
 
     /*导航起终点Marker，可拖动改变起终点的坐标*/
@@ -140,7 +141,24 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
         };
         requestLocButton.setOnClickListener(btnClickListener);
         requestPermission();
-        mMapView =root.findViewById(R.id.mapview);
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R ||
+//                Environment.isExternalStorageManager()) {
+//            Toast.makeText(NavigationFragment.this.getActivity(), "已获得访问所有文件权限", Toast.LENGTH_SHORT).show();
+//        } else {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(NavigationFragment.this.getActivity())
+//                    .setMessage("本程序需要您同意允许访问所有文件权限")
+//                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+//                                    startActivity(intent);
+//                                }
+//                            });
+//
+//            builder.show();
+//        }
+
+        mMapView =(MapView) root.findViewById(R.id.mapview);
         mBaiduMap = mMapView.getMap();
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
@@ -148,7 +166,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
         地图初始化
          */
         // 定位初始化
-        mLocClient = new LocationClient(getActivity().getApplicationContext());
+        mLocClient = new LocationClient(NavigationFragment.this.getActivity());
         mLocClient.registerLocationListener(myListener);
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true); // 打开gps
@@ -314,7 +332,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
     private void startBikeNavi() {
         Log.d(TAG, "startBikeNavi");
         try {
-            BikeNavigateHelper.getInstance().initNaviEngine(com.example.intelligentdrivingassistant.navigation.NavigationFragment.this.getActivity(), new IBEngineInitListener() {
+            BikeNavigateHelper.getInstance().initNaviEngine(NavigationFragment.this.getActivity(), new IBEngineInitListener() {
                 @Override
                 public void engineInitSuccess() {
                     Log.d(TAG, "BikeNavi engineInitSuccess");
@@ -339,7 +357,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
     private void startWalkNavi() {
         Log.d(TAG, "startWalkNavi");
         try {
-            WalkNavigateHelper.getInstance().initNaviEngine(com.example.intelligentdrivingassistant.navigation.NavigationFragment.this.getActivity(), new IWEngineInitListener() {
+            WalkNavigateHelper.getInstance().initNaviEngine(NavigationFragment.this.getActivity(), new IWEngineInitListener() {
                 @Override
                 public void engineInitSuccess() {
                     Log.d(TAG, "WalkNavi engineInitSuccess");
@@ -372,7 +390,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
             public void onRoutePlanSuccess() {
                 Log.d(TAG, "BikeNavi onRoutePlanSuccess");
                 Intent intent = new Intent();
-                intent.setClass(com.example.intelligentdrivingassistant.navigation.NavigationFragment.this.getActivity(), BNaviGuideActivity.class);
+                intent.setClass(NavigationFragment.this.getActivity(), BNaviGuideActivity.class);
                 startActivity(intent);
             }
 
@@ -400,7 +418,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
                 Log.d(TAG, "onRoutePlanSuccess");
 
                 Intent intent = new Intent();
-                intent.setClass(com.example.intelligentdrivingassistant.navigation.NavigationFragment.this.getActivity(), com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.class);
+                intent.setClass(NavigationFragment.this.getActivity(), WNaviGuideActivity.class);
                 startActivity(intent);
 
             }
@@ -442,7 +460,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
             };
 
             for (String perm : permissions) {
-                if (PackageManager.PERMISSION_GRANTED != com.example.intelligentdrivingassistant.navigation.NavigationFragment.this.getActivity().checkSelfPermission(perm)) {
+                if (PackageManager.PERMISSION_GRANTED != NavigationFragment.this.getActivity().checkSelfPermission(perm)) {
                     permissionsList.add(perm);
                     // 进入到这里代表没有权限.
                 }
@@ -478,8 +496,8 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
      * @return A new instance of fragment RotateFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static com.example.intelligentdrivingassistant.navigation.NavigationFragment newInstance(String param1, String param2) {
-        com.example.intelligentdrivingassistant.navigation.NavigationFragment fragment = new com.example.intelligentdrivingassistant.navigation.NavigationFragment();
+    public static NavigationFragment newInstance(String param1, String param2) {
+        NavigationFragment fragment = new NavigationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

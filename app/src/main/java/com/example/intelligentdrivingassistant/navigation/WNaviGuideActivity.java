@@ -23,7 +23,7 @@ import com.baidu.platform.comapi.walknavi.widget.ArCameraView;
 
 public class WNaviGuideActivity extends Activity {
 
-    private final static String TAG = com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.class.getSimpleName();
+    private final static String TAG = WNaviGuideActivity.class.getSimpleName();
 
     private WalkNavigateHelper mNaviHelper;
 
@@ -52,7 +52,7 @@ public class WNaviGuideActivity extends Activity {
         mNaviHelper = WalkNavigateHelper.getInstance();
 
         try {
-            View view = mNaviHelper.onCreate(com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.this);
+            View view = mNaviHelper.onCreate(this);
             if (view != null) {
                 setContentView(view);
             }
@@ -64,7 +64,7 @@ public class WNaviGuideActivity extends Activity {
             @Override
             public void onWalkNaviModeChange(int mode, WalkNaviModeSwitchListener listener) {
                 Log.d(TAG, "onWalkNaviModeChange : " + mode);
-                mNaviHelper.switchWalkNaviMode(com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.this, mode, listener);
+                mNaviHelper.switchWalkNaviMode(WNaviGuideActivity.this, mode, listener);
             }
 
             @Override
@@ -81,7 +81,7 @@ public class WNaviGuideActivity extends Activity {
             }
         });
 
-        boolean startResult = mNaviHelper.startWalkNavi(com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.this);
+        boolean startResult = mNaviHelper.startWalkNavi(this);
         Log.e(TAG, "startWalkNavi result : " + startResult);
 
         mNaviHelper.setRouteGuidanceListener(this, new IWRouteGuidanceListener() {
@@ -164,9 +164,9 @@ public class WNaviGuideActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == ArCameraView.WALK_AR_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.this, "没有相机权限,请打开后重试", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WNaviGuideActivity.this, "没有相机权限,请打开后重试", Toast.LENGTH_SHORT).show();
             } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mNaviHelper.startCameraAndSetMapView(com.example.intelligentdrivingassistant.navigation.WNaviGuideActivity.this);
+                mNaviHelper.startCameraAndSetMapView(WNaviGuideActivity.this);
             }
         }
     }

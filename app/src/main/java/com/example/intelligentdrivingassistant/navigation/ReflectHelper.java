@@ -1,15 +1,16 @@
-/*
- * Copyright (C) 2020 Baidu, Inc. All Rights Reserved.
- */
+
 package com.example.intelligentdrivingassistant.navigation;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.util.Log;
 
 import java.lang.reflect.Method;
 
+import static android.os.Build.VERSION.PREVIEW_SDK_INT;
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.P;
 
 public class ReflectHelper {
     private static final String TAG = "ReflectHelper";
@@ -28,8 +29,7 @@ public class ReflectHelper {
 
             Class<?> vmRuntimeClass = (Class<?>) forName.invoke(null, "dalvik.system.VMRuntime");
             Method getRuntime = (Method) getDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null);
-            setHiddenApiExemptions = (Method) getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions",
-                    new Class[]{String[].class});
+            setHiddenApiExemptions = (Method) getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", new Class[]{String[].class});
             sVmRuntime = getRuntime.invoke(null);
         } catch (Throwable e) {
             Log.e(TAG, "reflect bootstrap failed:", e);
@@ -37,7 +37,7 @@ public class ReflectHelper {
     }
 
     public static void unseal(Context context) {
-        if (SDK_INT < 29) {
+        if (SDK_INT < 28) {
             // Below Android P, ignore
             return;
         }
@@ -53,17 +53,28 @@ public class ReflectHelper {
 
         ApplicationInfo applicationInfo = context.getApplicationInfo();
 
-        synchronized (com.example.intelligentdrivingassistant.navigation.ReflectHelper.class) {
+        synchronized (ReflectHelper.class) {
             if (unsealed != UNKNOWN) {
                 return;
             }
 
             unsealed = 0;
 
-            return;
+            if ((SDK_INT == P && PREVIEW_SDK_INT > 0) || SDK_INT > P) {
+                return;
+            }
 
             // Android P, we need to sync the flags with ApplicationInfo
             // We needn't to this on Android Q.
+            try {
+                @SuppressLint({"PrivateApi", "SoonBlockedPrivateApi"})
+                Method setHiddenApiEnforcementPolicy = ApplicationInfo.class
+                        .getDeclaredMethod("setHiddenApiEnforcementPolicy", int.class);
+                setHiddenApiEnforcementPolicy.invoke(applicationInfo, 0);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                unsealed = ERROR;
+            }
         }
     }
 
@@ -105,3 +116,4 @@ public class ReflectHelper {
         return exempt(new String[]{"L"});
     }
 }
+
