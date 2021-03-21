@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lzx.starrysky.provider.SongInfo;
-
+import com.example.intelligentdrivingassistant.R;
 import java.util.List;
 
-public class SongAdapter extends RecyclerView.Adapter<com.neusoft.alpine.teamsix.SongAdapter.SongViewHolder> {
+public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
 
     private static final String TAG = "SongAdapter";
     public static Handler mHandler = null;
@@ -55,7 +55,7 @@ public class SongAdapter extends RecyclerView.Adapter<com.neusoft.alpine.teamsix
     }
 
     @Override
-    public void onBindViewHolder(@NonNull com.neusoft.alpine.teamsix.SongAdapter.SongViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SongAdapter.SongViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: ");
         holder.bind(mData.get(position));
     }

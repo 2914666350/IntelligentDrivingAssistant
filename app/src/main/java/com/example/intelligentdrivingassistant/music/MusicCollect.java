@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.intelligentdrivingassistant.MainActivity;
+import com.example.intelligentdrivingassistant.R;
 import com.lzx.starrysky.StarrySky;
 import com.lzx.starrysky.provider.SongInfo;
 
@@ -29,9 +31,9 @@ public class MusicCollect extends AppCompatActivity {
         button = findViewById(R.id.imageButton12);
         recyclerView = findViewById(R.id.recyclerview3);
         playList = new ArrayList<>();
-        com.neusoft.alpine.teamsix.MusicDBHelper db=new com.neusoft.alpine.teamsix.MusicDBHelper(this);
+        MusicDBHelper db=new MusicDBHelper(this);
         db.open();
-        db1= SQLiteDatabase.openOrCreateDatabase(com.neusoft.alpine.teamsix.MusicDBHelper.path,null);
+        db1= SQLiteDatabase.openOrCreateDatabase(MusicDBHelper.path,null);
         Cursor cursor=db1.query("user_info",null,null,null,null,null,null);
         while (cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex("id"));
@@ -46,19 +48,19 @@ public class MusicCollect extends AppCompatActivity {
             playList.add(info);
         }
         StarrySky.with().updatePlayList(playList);
-        com.neusoft.alpine.teamsix.SongAdapter adapter = new com.neusoft.alpine.teamsix.SongAdapter(this, playList);
+        SongAdapter adapter = new SongAdapter(this, playList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new com.neusoft.alpine.teamsix.SongAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(String id, String name, String artist, long time) {
                 StarrySky.with().playMusicById(id);
                 MusicFragment.ppuase=1;
                 MusicFragment.pattern=0;
                 Intent intent = new Intent();
-                intent.setClass(com.neusoft.alpine.teamsix.MusicCollect.this, MainActivity.class);
+                intent.setClass(MusicCollect.this, MainActivity.class);
                 intent.putExtra("id",1);
                 startActivity(intent);
             }
@@ -68,7 +70,7 @@ public class MusicCollect extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(com.neusoft.alpine.teamsix.MusicCollect.this, MainActivity.class);
+                intent.setClass(MusicCollect.this, MainActivity.class);
                 intent.putExtra("id",1);
                 startActivity(intent);
             }

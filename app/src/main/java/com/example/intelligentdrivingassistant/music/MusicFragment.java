@@ -69,7 +69,7 @@ public class MusicFragment extends Fragment {
         progressBar=root.findViewById(R.id.progressBar2);
         playList = new ArrayList<>();
 
-        DBHelper db=new DBHelper(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity());
+        DBHelper db=new DBHelper(MusicFragment.this.getActivity());
         db.open();
         db1= SQLiteDatabase.openOrCreateDatabase(DBHelper.path,null);
         Cursor cursor=db1.query("user_info",null,null,null,null,null,null);
@@ -86,10 +86,10 @@ public class MusicFragment extends Fragment {
             playList.add(info);
         }
         StarrySky.with().updatePlayList(playList);
-        SongAdapter adapter = new SongAdapter(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity(), playList);
+        SongAdapter adapter = new SongAdapter(MusicFragment.this.getActivity(), playList);
         adapter.initHandler(mHandler);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MusicFragment.this.getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -142,7 +142,7 @@ public class MusicFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity(), MusicFind.class);
+                intent.setClass(MusicFragment.this.getActivity(), MusicFind.class);
                 startActivity(intent);
             }
         });
@@ -220,13 +220,13 @@ public class MusicFragment extends Fragment {
                 String artist=StarrySky.with().getNowPlayingSongInfo().getArtist();
                 long duration=StarrySky.with().getNowPlayingSongInfo().getDuration();
                 boolean ret;
-                MusicDBHelper db=new MusicDBHelper(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity());
+                MusicDBHelper db=new MusicDBHelper(MusicFragment.this.getActivity());
                 db.open();
                 ret=db.intert(id,name,artist,duration);
                 if(ret){
-                    Toast.makeText(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity(),"收藏成功！", Toast.LENGTH_SHORT).show();}
+                    Toast.makeText(MusicFragment.this.getActivity(),"收藏成功！", Toast.LENGTH_SHORT).show();}
                 else {
-                    Toast.makeText(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity(),"已经收藏过了！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MusicFragment.this.getActivity(),"已经收藏过了！", Toast.LENGTH_SHORT).show();
                 }
                 button5.setImageDrawable(getResources().getDrawable(android.R.drawable.btn_star_big_on));
             }
@@ -235,7 +235,7 @@ public class MusicFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity(), MusicCollect.class);
+                intent.setClass(MusicFragment.this.getActivity(), MusicCollect.class);
                 startActivity(intent);
             }
         });
@@ -248,7 +248,7 @@ public class MusicFragment extends Fragment {
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    MusicDBHelper db=new MusicDBHelper(com.neusoft.alpine.teamsix.ui.music.MusicFragment.this.getActivity());
+                    MusicDBHelper db=new MusicDBHelper(MusicFragment.this.getActivity());
                     db.open();
                     textView1.setText(NAME);
                     textView1.setSelected(true);

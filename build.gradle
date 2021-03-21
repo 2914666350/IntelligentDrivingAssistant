@@ -16,6 +16,10 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://maven.google.com" }//这一条，然后让它加载一下就行
+        maven{
+            url "https://dl.bintray.com/lizixian/StarrySky/"
+        }
     }
 }
 

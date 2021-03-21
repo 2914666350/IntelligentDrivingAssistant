@@ -87,7 +87,7 @@ public class MusicFind extends AppCompatActivity {
 
         // 其他统一的配置
         // 详细说明看GitHub文档：https://github.com/jeasonlzy/okhttp-OkGo
-        OkGo.getInstance().init(com.neusoft.alpine.teamsix.MusicFind.this.getApplication())                           //必须调用初始化
+        OkGo.getInstance().init(MusicFind.this.getApplication())                           //必须调用初始化
                 .setOkHttpClient(builder.build())               //建议设置OkHttpClient，不设置会使用默认的
                 .setCacheMode(CacheMode.NO_CACHE)               //全局统一缓存模式，默认不使用缓存，可以不传
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)   //全局统一缓存时间，默认永不过期，可以不传
@@ -123,9 +123,9 @@ public class MusicFind extends AppCompatActivity {
     private void onGetPlayList(){
         //Log.d(TAG, "onGetPlayList: " + playList.size());
         //StarrySky.with().updatePlayList(playList);
-        SongAdapter adapter = new SongAdapter(com.neusoft.alpine.teamsix.MusicFind.this, playList);
+        SongAdapter adapter = new SongAdapter(MusicFind.this, playList);
         //adapter.initHandler(mHandler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(com.neusoft.alpine.teamsix.MusicFind.this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MusicFind.this);
         // layoutManager.setOrientation(RecyclerView.VERTICAL);//线性布局
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -133,13 +133,13 @@ public class MusicFind extends AppCompatActivity {
             @Override
             public void OnItemClick(String id, String name, String artist, long time) {
                 boolean ret;
-                DBHelper db=new DBHelper(com.neusoft.alpine.teamsix.MusicFind.this);
+                DBHelper db=new DBHelper(MusicFind.this);
                 db.open();
                 ret=db.intert(id,name,artist,time);
                 if(ret){
-                Toast.makeText(com.neusoft.alpine.teamsix.MusicFind.this,"添加到播放列表成功！", Toast.LENGTH_SHORT).show();}
+                Toast.makeText(MusicFind.this,"添加到播放列表成功！", Toast.LENGTH_SHORT).show();}
                 else {
-                    Toast.makeText(com.neusoft.alpine.teamsix.MusicFind.this,"播放列表中已经存在！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MusicFind.this,"播放列表中已经存在！", Toast.LENGTH_SHORT).show();
                 }
             }
         });
