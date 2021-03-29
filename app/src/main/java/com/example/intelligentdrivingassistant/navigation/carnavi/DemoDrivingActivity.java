@@ -4,19 +4,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
-
-import com.baidu.mapclient.liteapp.R;
-import com.baidu.navi.sdkdemo.DemoRouteResultFragment;
+import com.example.intelligentdrivingassistant.R;
+import com.example.intelligentdrivingassistant.navigation.carnavi.util.DemoRouteResultFragment;
 import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
 import com.baidu.navisdk.adapter.IBNRoutePlanManager;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;

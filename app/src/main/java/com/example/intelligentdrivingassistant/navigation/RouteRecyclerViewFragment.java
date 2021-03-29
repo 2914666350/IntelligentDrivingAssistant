@@ -1,5 +1,6 @@
 package com.example.intelligentdrivingassistant.navigation;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.intelligentdrivingassistant.R;
 
@@ -25,7 +27,7 @@ public class RouteRecyclerViewFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+   private Button routeButton;
     public RouteRecyclerViewFragment() {
         // Required empty public constructor
     }
@@ -60,7 +62,17 @@ public class RouteRecyclerViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_route_recycler_view, container, false);
+        View root=inflater.inflate(R.layout.fragment_route_recycler_view, container, false);
+
+        routeButton=root.findViewById(R.id.route_dialog_btn);
+        routeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        return root;
     }
 }

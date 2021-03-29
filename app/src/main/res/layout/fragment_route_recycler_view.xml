@@ -50,17 +50,19 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.20109439" />
 
-    <ImageButton
-        android:id="@+id/imageButton8"
+    <TextView
+        android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/back"
+        android:text="终点"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline12"
         app:layout_constraintEnd_toStartOf="@+id/guideline11"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
@@ -69,26 +71,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline12">
 
-        <TextView
-            android:id="@+id/foot_tv"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/route_btn"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="步行"/>
-        <TextView
-            android:id="@+id/bike_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="骑行"/>
-        <TextView
-            android:id="@+id/car_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="驾车"/>
-        <TextView
-            android:id="@+id/bus_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="步行"/>
+            android:text="点击查看路线" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -97,5 +84,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.31" />
+
+    <!--<com.baidu.mapapi.map.MapView
+        android:id="@+id/mapviewRoute"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+    </com.baidu.mapapi.map.MapView>-->
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="起点"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView9"
+        app:layout_constraintEnd_toEndOf="@+id/textView9"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

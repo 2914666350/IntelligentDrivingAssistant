@@ -16,8 +16,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.baidu.mapclient.liteapp.R;
-import com.baidu.navi.sdkdemo.EventHandler;
+import com.example.intelligentdrivingassistant.R;
+import com.example.intelligentdrivingassistant.navigation.carnavi.util.EventHandler;
 import com.baidu.navisdk.adapter.BNaviCommonParams;
 import com.baidu.navisdk.adapter.IBNaviListener;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;

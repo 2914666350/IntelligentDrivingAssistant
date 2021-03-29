@@ -1,9 +1,7 @@
 package com.example.intelligentdrivingassistant.navigation;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -13,12 +11,15 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -27,12 +28,7 @@ import androidx.fragment.app.Fragment;
 
 
 import com.baidu.location.LocationClient;
-import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
-import com.baidu.mapapi.bikenavi.adapter.IBEngineInitListener;
-import com.baidu.mapapi.bikenavi.adapter.IBRoutePlanListener;
-import com.baidu.mapapi.bikenavi.model.BikeRoutePlanError;
-import com.baidu.mapapi.bikenavi.params.BikeNaviLaunchParam;
-import com.baidu.mapapi.bikenavi.params.BikeRouteNodeInfo;
+
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -44,15 +40,26 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.walknavi.WalkNavigateHelper;
-import com.baidu.mapapi.walknavi.adapter.IWEngineInitListener;
-import com.baidu.mapapi.walknavi.adapter.IWRoutePlanListener;
-import com.baidu.mapapi.walknavi.model.WalkRoutePlanError;
-import com.baidu.mapapi.walknavi.params.WalkNaviLaunchParam;
-import com.baidu.mapapi.walknavi.params.WalkRouteNodeInfo;
+
+import com.baidu.navisdk.adapter.BNRoutePlanNode;
+import com.baidu.navisdk.adapter.BNaviCommonParams;
+import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
+import com.baidu.navisdk.adapter.IBNRoutePlanManager;
+import com.baidu.navisdk.adapter.IBaiduNaviManager;
 import com.example.intelligentdrivingassistant.R;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.baidu.location.*;
+import com.example.intelligentdrivingassistant.navigation.carnavi.CarNaviActivity;
+import com.example.intelligentdrivingassistant.navigation.carnavi.DemoExtGpsActivity;
+import com.example.intelligentdrivingassistant.navigation.carnavi.DemoGuideActivity;
+import com.example.intelligentdrivingassistant.navigation.carnavi.DemoMainActivity;
+import com.example.intelligentdrivingassistant.navigation.carnavi.util.NormalUtils;
+import com.example.intelligentdrivingassistant.navigation.liteapp.ForegroundService;
+
 import static android.content.Context.SENSOR_SERVICE;
 
 public class NavigationFragment extends Fragment implements SensorEventListener{
@@ -70,16 +77,16 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
     private double mCurrentLat = 0.0;
     private double mCurrentLon = 0.0;
     private float mCurrentAccracy;
-
+    public String city="";
     // UI相关
     RadioGroup.OnCheckedChangeListener radioButtonListener;
     Button requestLocButton;
     boolean isFirstLoc = true; // 是否首次定位
     private MyLocationData locData;
     private float direction;
-
+    private ImageView routeDialogBtn;
     private final static String TAG = NavigationFragment.class.getSimpleName();
-
+    public String route="";
     private MapView  mMapView;
     private BaiduMap mBaiduMap;
 
@@ -90,19 +97,30 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
     private LatLng startPt;
     private LatLng endPt;
 
-    private BikeNaviLaunchParam bikeParam;
-    private WalkNaviLaunchParam walkParam;
 
     private static boolean isPermissionRequested = false;
 
-    private BitmapDescriptor bdStart = BitmapDescriptorFactory
-            .fromResource(R.drawable.icon_start);
-    private BitmapDescriptor bdEnd = BitmapDescriptorFactory
-            .fromResource(R.drawable.icon_end);
+    private static final String APP_FOLDER_NAME = "BNSDKSimpleDemo";
+
+    private static final String[] authBaseArr = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int authBaseRequestCode = 1;
+
+    private Button mNaviBtn = null;
+
+    private String mSDCardPath = null;
+    private BNRoutePlanNode mStartNode = null;
+    private BNRoutePlanNode mEndNode = null;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_navigation, container, false);
+        initRoutePlanNode();
+        if (initDirs()) {
+            initNavi();
+        }
         requestLocButton = root.findViewById(R.id.buttonLocMode);
         mSensorManager = (SensorManager)getActivity().getApplicationContext().getSystemService(SENSOR_SERVICE);//获取传感器管理服务
         mCurrentMode = MyLocationConfiguration.LocationMode.NORMAL;
@@ -158,7 +176,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
 //            builder.show();
 //        }
 
-        mMapView =(MapView) root.findViewById(R.id.mapview);
+        mMapView =(MapView) root.findViewById(R.id.mapviewRoute);
         mBaiduMap = mMapView.getMap();
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
@@ -169,61 +187,71 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
         mLocClient = new LocationClient(NavigationFragment.this.getActivity());
         mLocClient.registerLocationListener(myListener);
         LocationClientOption option = new LocationClientOption();
+        option.setIsNeedAddress(true);
         option.setOpenGps(true); // 打开gps
         option.setCoorType("bd09ll"); // 设置坐标类型
         option.setScanSpan(1000);
         mLocClient.setLocOption(option);
         mLocClient.start();
+        Log.d(TAG, "onCreateView: "+city);
+       /**路线起终点弹出框**/
+       routeDialogBtn=root.findViewById(R.id.route_dialog_btn);
+       routeDialogBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               route="true";
+//               View dialogView = View.inflate(NavigationFragment.this.getActivity(), R.layout
+//                       .dialog_node, null);
+//               final EditText editStart = dialogView.findViewById(R.id.edit_start);
+//               final EditText editEnd = dialogView.findViewById(R.id.edit_end);
+//               new AlertDialog.Builder(NavigationFragment.this.getActivity())
+//                       .setView(dialogView)
+//                       .setPositiveButton("导航", new DialogInterface.OnClickListener() {
+//                           @Override
+//                           public void onClick(DialogInterface dialog, int which) {
+//                               String startAddress = editStart.getText().toString().trim();
+//                               String endAddress = editEnd.getText().toString().trim();
+//                               /**起点与终点**/
+//                               PlanNode stNode = PlanNode.withCityNameAndPlaceName(city,startAddress);
+//
+//                               PlanNode enNode = PlanNode.withCityNameAndPlaceName(city,endAddress);
+//                               Double  startPoLa=stNode.getLocation().latitude;
+//                               Double  startPoLo=stNode.getLocation().longitude;
+//                               Double  endPoLa=enNode.getLocation().latitude;
+//                               Double  endPoLo=enNode.getLocation().longitude;
+//                               String startPoint=startPoLa.toString()+","+startPoLo.toString();
+//                               String endPoint=endPoLa.toString()+","+endPoLo.toString();
+//                               if (!checkValid(startPoint, endPoint)) {
+//                                   Toast.makeText(NavigationFragment.this.getActivity(), "填写格式有误", Toast
+//                                           .LENGTH_SHORT).show();
+//                                   return;
+//                               }
+//                               String[] starts = startPoint.split(",");
+//                               String[] ends = endPoint.split(",");
+//                               BNRoutePlanNode sNode = new BNRoutePlanNode.Builder()
+//                                       .latitude(Double.parseDouble(starts[1]))
+//                                       .longitude(Double.parseDouble(starts[0]))
+//                                       .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+//                                       .build();
+//                               BNRoutePlanNode eNode = new BNRoutePlanNode.Builder()
+//                                       .latitude(Double.parseDouble(ends[1]))
+//                                       .longitude(Double.parseDouble(ends[0]))
+//                                       .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+//                                       .build();
+//
+//                               routePlanToNavi(sNode, eNode);
+//                           }
+//                       })
+//                       .show();
+           }
+       });
 
-
-        /*骑行导航入口*/
-        Button bikeBtn = root.findViewById(R.id.btn_bikenavi);
-        bikeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startBikeNavi();
-            }
-        });
-
-        /*普通步行导航入口*/
-        Button walkBtn = root.findViewById(R.id.btn_walknavi_normal);
-        walkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                walkParam.extraNaviMode(0);
-                startWalkNavi();
-            }
-        });
-
-        /*AR步行导航入口*/
-        Button arWalkBtn = root.findViewById(R.id.btn_walknavi_ar);
-        arWalkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                walkParam.extraNaviMode(1);
-                startWalkNavi();
-            }
-        });
 
         startPt = new LatLng(34.638385,113.590845);
 //        startPt= new LatLng(new BDLocation().getLatitude(),new BDLocation().getAltitude());
         endPt = new LatLng(34.63892, 113.592606);
 
-        /*构造导航起终点参数对象*/
-        BikeRouteNodeInfo bikeStartNode = new BikeRouteNodeInfo();
-        bikeStartNode.setLocation(startPt);
-        BikeRouteNodeInfo bikeEndNode = new BikeRouteNodeInfo();
-        bikeEndNode.setLocation(endPt);
-        bikeParam = new BikeNaviLaunchParam().startNodeInfo(bikeStartNode).endNodeInfo(bikeEndNode);
 
-        WalkRouteNodeInfo walkStartNode = new WalkRouteNodeInfo();
-        walkStartNode.setLocation(startPt);
-        WalkRouteNodeInfo walkEndNode = new WalkRouteNodeInfo();
-        walkEndNode.setLocation(endPt);
-        walkParam = new WalkNaviLaunchParam().startNodeInfo(walkStartNode).endNodeInfo(walkEndNode);
-
-        /* 初始化起终点Marker */
-        initOverlay();
 
         return root;
     }
@@ -251,7 +279,10 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
      * 定位SDK监听函数
      */
     public class MyLocationListenner extends BDAbstractLocationListener {
-
+//        public String cityNa;
+//        public MyLocationListenner(){
+//
+//        }
         @Override
         public void onReceiveLocation(BDLocation location) {
             // map view 销毁后不在处理新接收的位置
@@ -261,6 +292,14 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
             mCurrentLat = location.getLatitude();
             mCurrentLon = location.getLongitude();
             mCurrentAccracy = location.getRadius();
+            /**获取所在城市名**/
+             city=location.getCity();
+//             cityNa=city;
+            Log.d(TAG, "onReceiveLocation: "+city);
+
+//            String addr=location.getAddrStr();
+//            city=addr.substring(addr.indexOf("省")+1, addr.indexOf("市")+1);
+
             locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
                     // 此处设置开发者获取到的方向信息，顺时针0-360
@@ -275,161 +314,202 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
                 builder.target(ll).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
+            if(route.equals("true")){
+                Intent intent=new Intent();
+                intent.setClass(NavigationFragment.this.getActivity(), CarNaviActivity.class);
+                intent.putExtra("city",city);
+                startActivity(intent);
+                mLocClient.stop();
+            }
         }
 
+//        public void setCityNa(String cityNa) {
+//            this.cityNa=cityNa;
+//        }
+//
+//
+//        public String getCityNa(){
+//            return cityNa;
+//        }
         public void onReceivePoi(BDLocation poiLocation) {
         }
     }
-
-
-    /**
-     * 初始化导航起终点Marker
-     */
-    public void initOverlay() {
-
-        MarkerOptions ooA = new MarkerOptions().position(startPt).icon(bdStart)
-                .zIndex(9).draggable(true);
-
-        mStartMarker = (Marker) (mBaiduMap.addOverlay(ooA));
-        mStartMarker.setDraggable(true);
-        MarkerOptions ooB = new MarkerOptions().position(endPt).icon(bdEnd)
-                .zIndex(5);
-        mEndMarker = (Marker) (mBaiduMap.addOverlay(ooB));
-        mEndMarker.setDraggable(true);
-
-        mBaiduMap.setOnMarkerDragListener(new BaiduMap.OnMarkerDragListener() {
-            public void onMarkerDrag(Marker marker) {
-            }
-
-            public void onMarkerDragEnd(Marker marker) {
-                if(marker == mStartMarker){
-                    startPt = marker.getPosition();
-                }else if(marker == mEndMarker){
-                    endPt = marker.getPosition();
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
+            grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == authBaseRequestCode) {
+            for (int ret : grantResults) {
+                if (ret == 0) {
+                    continue;
+                } else {
+                    Toast.makeText(NavigationFragment.this.getActivity(),
+                            "缺少导航基本的权限!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-
-                BikeRouteNodeInfo bikeStartNode = new BikeRouteNodeInfo();
-                bikeStartNode.setLocation(startPt);
-                BikeRouteNodeInfo bikeEndNode = new BikeRouteNodeInfo();
-                bikeEndNode.setLocation(endPt);
-                bikeParam = new BikeNaviLaunchParam().startNodeInfo(bikeStartNode).endNodeInfo(bikeEndNode);
-
-                WalkRouteNodeInfo walkStartNode = new WalkRouteNodeInfo();
-                walkStartNode.setLocation(startPt);
-                WalkRouteNodeInfo walkEndNode = new WalkRouteNodeInfo();
-                walkEndNode.setLocation(endPt);
-                walkParam = new WalkNaviLaunchParam().startNodeInfo(walkStartNode).endNodeInfo(walkEndNode);
-
             }
-
-            public void onMarkerDragStart(Marker marker) {
-            }
-        });
-    }
-    /**
-     * 开始骑行导航
-     */
-    private void startBikeNavi() {
-        Log.d(TAG, "startBikeNavi");
-        try {
-            BikeNavigateHelper.getInstance().initNaviEngine(NavigationFragment.this.getActivity(), new IBEngineInitListener() {
-                @Override
-                public void engineInitSuccess() {
-                    Log.d(TAG, "BikeNavi engineInitSuccess");
-                    routePlanWithBikeParam();
-                }
-
-                @Override
-                public void engineInitFail() {
-                    Log.d(TAG, "BikeNavi engineInitFail");
-                    BikeNavigateHelper.getInstance().unInitNaviEngine();
-                }
-            });
-        } catch (Exception e) {
-            Log.d(TAG, "startBikeNavi Exception");
-            e.printStackTrace();
+            initNavi();
         }
     }
-
-    /**
-     * 开始步行导航
-     */
-    private void startWalkNavi() {
-        Log.d(TAG, "startWalkNavi");
-        try {
-            WalkNavigateHelper.getInstance().initNaviEngine(NavigationFragment.this.getActivity(), new IWEngineInitListener() {
-                @Override
-                public void engineInitSuccess() {
-                    Log.d(TAG, "WalkNavi engineInitSuccess");
-                    routePlanWithWalkParam();
-                }
-
-                @Override
-                public void engineInitFail() {
-                    Log.d(TAG, "WalkNavi engineInitFail");
-                    WalkNavigateHelper.getInstance().unInitNaviEngine();
-                }
-            });
-        } catch (Exception e) {
-            Log.d(TAG, "startBikeNavi Exception");
-            e.printStackTrace();
+    private void initRoutePlanNode() {
+        mStartNode = new BNRoutePlanNode.Builder()
+                .latitude(40.050969)
+                .longitude(116.300821)
+                .name("百度大厦")
+                .description("百度大厦")
+                .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+                .build();
+        mEndNode = new BNRoutePlanNode.Builder()
+                .latitude(39.908749)
+                .longitude(116.397491)
+                .name("北京天安门")
+                .description("北京天安门")
+                .coordinateType(BNRoutePlanNode.CoordinateType.WGS84)
+                .build();
+    }
+    private String getSdcardDir() {
+        if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+            return Environment.getExternalStorageDirectory().toString();
         }
+        return null;
+    }
+    private boolean hasBasePhoneAuth() {
+        PackageManager pm = NavigationFragment.this.getActivity().getPackageManager();
+        for (String auth : authBaseArr) {
+            if (pm.checkPermission(auth, NavigationFragment.this.getActivity().getPackageName()) != PackageManager
+                    .PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private void initTTS() {
+        // 使用内置TTS
+        BaiduNaviManagerFactory.getTTSManager().initTTS(NavigationFragment.this.getActivity().getApplicationContext(),
+                getSdcardDir(), APP_FOLDER_NAME, NormalUtils.getTTSAppID());
+    }
+    public void  initNavi(){
+
+        // 申请权限
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            if (!hasBasePhoneAuth()) {
+                this.requestPermissions(authBaseArr, authBaseRequestCode);
+                return;
+            }
+        }
+
+        if (BaiduNaviManagerFactory.getBaiduNaviManager().isInited()) {
+            return;
+        }
+
+        BaiduNaviManagerFactory.getBaiduNaviManager().init(NavigationFragment.this.getActivity(),
+                mSDCardPath, APP_FOLDER_NAME, new IBaiduNaviManager.INaviInitListener() {
+
+                    @Override
+                    public void onAuthResult(int status, String msg) {
+                        String result;
+                        if (0 == status) {
+                            result = "key校验成功!";
+                        } else {
+                            result = "key校验失败, " + msg;
+                        }
+                        Toast.makeText(NavigationFragment.this.getActivity(), result, Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void initStart() {
+                        Toast.makeText(NavigationFragment.this.getActivity(),
+                                "百度导航引擎初始化开始", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void initSuccess() {
+                        Toast.makeText(NavigationFragment.this.getActivity(),
+                                "百度导航引擎初始化成功", Toast.LENGTH_SHORT).show();
+                        // 初始化tts
+                        initTTS();
+                    }
+
+                    @Override
+                    public void initFailed(int errCode) {
+                        Toast.makeText(NavigationFragment.this.getActivity(),
+                                "百度导航引擎初始化失败 " + errCode, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+    private boolean initDirs() {
+        mSDCardPath = getSdcardDir();
+        if (mSDCardPath == null) {
+            return false;
+        }
+        File f = new File(mSDCardPath, APP_FOLDER_NAME);
+        if (!f.exists()) {
+            try {
+                f.mkdir();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 
-    /**
-     * 发起骑行导航算路
-     */
-    private void routePlanWithBikeParam() {
-        BikeNavigateHelper.getInstance().routePlanWithRouteNode(bikeParam, new IBRoutePlanListener() {
-            @Override
-            public void onRoutePlanStart() {
-                Log.d(TAG, "BikeNavi onRoutePlanStart");
-            }
 
-            @Override
-            public void onRoutePlanSuccess() {
-                Log.d(TAG, "BikeNavi onRoutePlanSuccess");
-                Intent intent = new Intent();
-                intent.setClass(NavigationFragment.this.getActivity(), BNaviGuideActivity.class);
-                startActivity(intent);
-            }
+    private void routePlanToNavi(BNRoutePlanNode sNode, BNRoutePlanNode eNode, final Bundle bundle) {
+        List<BNRoutePlanNode> list = new ArrayList<>();
+        list.add(sNode);
+        list.add(eNode);
 
-            @Override
-            public void onRoutePlanFail(BikeRoutePlanError error) {
-                Log.d(TAG, "BikeNavi onRoutePlanFail");
-            }
+        BaiduNaviManagerFactory.getRoutePlanManager().routeplanToNavi(
+                list,
+                IBNRoutePlanManager.RoutePlanPreference.ROUTE_PLAN_PREFERENCE_DEFAULT,
+                bundle,
+                new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        switch (msg.what) {
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_START:
+                                Toast.makeText(NavigationFragment.this.getActivity().getApplicationContext(),
+                                        "算路开始", Toast.LENGTH_SHORT).show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_SUCCESS:
+                                Toast.makeText(NavigationFragment.this.getActivity().getApplicationContext(),
+                                        "算路成功", Toast.LENGTH_SHORT).show();
+                                // 躲避限行消息
+                                Bundle infoBundle = (Bundle) msg.obj;
+                                if (infoBundle != null) {
+                                    String info = infoBundle.getString(
+                                            BNaviCommonParams.BNRouteInfoKey.TRAFFIC_LIMIT_INFO
+                                    );
+                                    Log.d("OnSdkDemo", "info = " + info);
+                                }
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_FAILED:
+                                Toast.makeText(NavigationFragment.this.getActivity().getApplicationContext(),
+                                        "算路失败", Toast.LENGTH_SHORT).show();
+                                break;
+                            case IBNRoutePlanManager.MSG_NAVI_ROUTE_PLAN_TO_NAVI:
+                                Toast.makeText(NavigationFragment.this.getActivity().getApplicationContext(),
+                                        "算路成功准备进入导航", Toast.LENGTH_SHORT).show();
 
-        });
+                                Intent intent = null;
+                                if (bundle == null) {
+                                    intent = new Intent(NavigationFragment.this.getActivity(),
+                                            DemoExtGpsActivity.class);
+                                } else {
+                                    intent = new Intent(NavigationFragment.this.getActivity(),
+                                            DemoGuideActivity.class);
+                                }
+                                startActivity(intent);
+                                break;
+                            default:
+                                // nothing
+                                break;
+                        }
+                    }
+                });
     }
 
-    /**
-     * 发起步行导航算路
-     */
-    private void routePlanWithWalkParam() {
-        WalkNavigateHelper.getInstance().routePlanWithRouteNode(walkParam, new IWRoutePlanListener() {
-            @Override
-            public void onRoutePlanStart() {
-                Log.d(TAG, "WalkNavi onRoutePlanStart");
-            }
-
-            @Override
-            public void onRoutePlanSuccess() {
-
-                Log.d(TAG, "onRoutePlanSuccess");
-
-                Intent intent = new Intent();
-                intent.setClass(NavigationFragment.this.getActivity(), WNaviGuideActivity.class);
-                startActivity(intent);
-
-            }
-
-            @Override
-            public void onRoutePlanFail(WalkRoutePlanError error) {
-                Log.d(TAG, "WalkNavi onRoutePlanFail");
-            }
-
-        });
-    }
 
     /**
      * Android6.0之后需要动态申请权限
@@ -487,14 +567,8 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RotateFragment.
-     */
+
+
     // TODO: Rename and change types and number of parameters
     public static NavigationFragment newInstance(String param1, String param2) {
         NavigationFragment fragment = new NavigationFragment();
@@ -507,6 +581,10 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 开启前台服务防止应用进入后台gps挂掉
+        NavigationFragment.this.getActivity()
+                .startService(new Intent(NavigationFragment.this.getActivity(),
+                        ForegroundService.class));
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -542,8 +620,7 @@ public class NavigationFragment extends Fragment implements SensorEventListener{
         mMapView = null;
         super.onDestroy();
         mMapView.onDestroy();
-        bdStart.recycle();
-        bdEnd.recycle();
+        NavigationFragment.this.getActivity().stopService(new Intent(NavigationFragment.this.getActivity(), ForegroundService.class));
     }
 
 }

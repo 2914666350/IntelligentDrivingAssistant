@@ -18,8 +18,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.baidu.mapclient.liteapp.R;
-import com.baidu.navi.sdkdemo.NormalUtils;
+import com.example.intelligentdrivingassistant.R;
+import com.example.intelligentdrivingassistant.navigation.carnavi.util.NormalUtils;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;
 import com.baidu.navisdk.adapter.BNRoutePlanNode.CoordinateType;
 import com.baidu.navisdk.adapter.BNaviCommonParams;

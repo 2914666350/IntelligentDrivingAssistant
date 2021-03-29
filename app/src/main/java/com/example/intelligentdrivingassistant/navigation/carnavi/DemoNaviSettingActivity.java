@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.baidu.mapclient.liteapp.R;
+import com.example.intelligentdrivingassistant.R;
 import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
 import com.baidu.navisdk.adapter.IBNOuterSettingParams;
 import com.baidu.navisdk.comapi.setting.SettingParams;

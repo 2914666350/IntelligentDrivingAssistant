@@ -6,11 +6,14 @@ android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
 
+    useLibrary 'org.apache.http.legacy'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    lintOptions {
+        abortOnError false
+    }
     defaultConfig {
         applicationId "com.example.intelligentdrivingassistant"
         minSdkVersion 21
@@ -19,6 +22,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters 'armeabi-v7a','armeabi','arm64-v84','x86','x86_64'
+        }
     }
 
     buildTypes {
@@ -30,6 +36,11 @@ android {
     sourceSets {
         main {
             jniLibs.srcDir 'libs'
+        }
+    }
+    repositories {
+        flatDir {
+            dirs 'libs'
         }
     }
 }
@@ -46,7 +57,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.android.material:material:1.3.0-alpha03'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation files('libs/BaiduLBS_Android.jar')
+//    implementation files('libs/BaiduLBS_Android.jar')
     implementation 'androidx.navigation:navigation-fragment:2.3.1'
     implementation 'androidx.navigation:navigation-ui:2.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -57,11 +68,20 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
     implementation files('libs/galaxy_lite_lbs_v2.2.jar')
     implementation files('libs/galaxy_lite_v2.0.jar')
-    implementation files('libs/intellij_annotations.jar')
+    implementation files('libs/javapoet-1.9.0.jar')
+//    implementation files('libs/lbsCoreSDK.jar')
+//    implementation files('libs/protobuf-java-2.3.0-micro.jar')
+//    implementation files('libs/req_head.jar')
+    implementation files('libs/BaiduLBS_Android.jar')
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    /**驾车导航**/
+    implementation(name:'NaviTts',ext:'aar')
+    implementation(name:'onsdk_all',ext:'aar')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
     /**音乐**/
     //OKGO Http访问库 基于OkHttp3
     implementation 'com.lzy.net:okgo:3.0.4'
@@ -71,7 +91,5 @@ dependencies {
     //StarrySkyX 音乐播放器 需要java8
     implementation 'com.lzx:StarrySkyX:2.4.4'
 
-    /**驾车导航**/
-    implementation(name:'NaviTts',ext:'aar')
-    implementation(name:'onsdk_all',ext:'aar')
+
 }

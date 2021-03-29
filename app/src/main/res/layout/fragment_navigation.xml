@@ -7,7 +7,7 @@
     tools:context="com.example.intelligentdrivingassistant.navigation.NavigationFragment">
 
     <com.baidu.mapapi.map.MapView
-        android:id="@+id/mapview"
+        android:id="@+id/mapviewRoute"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,14 +41,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
+        app:layout_constraintGuide_percent="0.89" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.87" />
+        app:layout_constraintGuide_percent="0.76" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
@@ -64,36 +64,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.84" />
 
-    <Button
-        android:id="@+id/btn_walknavi_ar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AR步行导航"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toStartOf="@+id/guideline8"
-        app:layout_constraintStart_toStartOf="@+id/guideline10"
-        app:layout_constraintTop_toTopOf="@+id/guideline6" />
-
-    <Button
-        android:id="@+id/btn_walknavi_normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="步行导航"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_bikenavi"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toTopOf="@+id/btn_bikenavi" />
-
-    <Button
-        android:id="@+id/btn_bikenavi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="骑行导航"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toStartOf="@id/guideline10"
-        app:layout_constraintStart_toStartOf="@id/guideline9"
-        app:layout_constraintTop_toTopOf="@+id/guideline6" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
         android:layout_width="wrap_content"
@@ -108,5 +78,16 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.60" />
 
-
+    <ImageView
+        android:id="@+id/route_dialog_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:src="@drawable/route"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline6" />
 </androidx.constraintlayout.widget.ConstraintLayout>

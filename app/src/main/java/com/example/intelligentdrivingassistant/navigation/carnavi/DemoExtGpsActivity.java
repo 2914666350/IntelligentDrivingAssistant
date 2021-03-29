@@ -5,9 +5,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
-import com.baidu.navi.sdkdemo.LocationController;
 import com.baidu.navisdk.adapter.BaiduNaviManagerFactory;
 import com.baidu.navisdk.adapter.IBNRouteGuideManager;
+import com.example.intelligentdrivingassistant.navigation.carnavi.util.LocationController;
 
 public class DemoExtGpsActivity extends Activity {
 
