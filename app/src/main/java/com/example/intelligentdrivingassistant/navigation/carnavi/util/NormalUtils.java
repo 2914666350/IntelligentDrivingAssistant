@@ -8,9 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.intelligentdrivingassistant.navigation.carnavi.CarNaviActivity;
-import com.example.intelligentdrivingassistant.navigation.carnavi.DemoDrivingActivity;
-import com.example.intelligentdrivingassistant.navigation.carnavi.DemoNaviActivity;
-import com.example.intelligentdrivingassistant.navigation.carnavi.DemoNaviSettingActivity;
 
 public class NormalUtils {
 
@@ -19,15 +16,15 @@ public class NormalUtils {
         activity.startActivity(it);
     }
 
-    public static void gotoSettings(Activity activity) {
-        Intent it = new Intent(activity, DemoNaviSettingActivity.class);
-        activity.startActivity(it);
-    }
+//    public static void gotoSettings(Activity activity) {
+//        Intent it = new Intent(activity, DemoNaviSettingActivity.class);
+//        activity.startActivity(it);
+//    }
 
-    public static void gotoDriving(Activity activity) {
-        Intent it = new Intent(activity, DemoDrivingActivity.class);
-        activity.startActivity(it);
-    }
+//    public static void gotoDriving(Activity activity) {
+//        Intent it = new Intent(activity, DemoDrivingActivity.class);
+//        activity.startActivity(it);
+//    }
 
     public static String getTTSAppID() {
         return "23852884";

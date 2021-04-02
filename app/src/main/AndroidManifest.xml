@@ -82,12 +82,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".music.MusicCollect" />
         <activity android:name=".music.MusicFind" />
-        <activity android:name=".navigation.carnavi.DemoNaviActivity" />
-        <activity android:name=".navigation.carnavi.DemoNaviSettingActivity" />
-        <activity android:name=".navigation.liteapp.LiteActivity" />
         <activity android:name=".navigation.carnavi.DemoExtGpsActivity" />
-        <activity android:name=".navigation.carnavi.DemoMainActivity" />
-        <activity android:name=".navigation.carnavi.DemoDrivingActivity" />
         <activity android:name=".navigation.carnavi.DemoGuideActivity" />
     </application>
 

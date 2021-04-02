@@ -349,24 +349,23 @@ public class CarNaviActivity extends AppCompatActivity {
         }
     }
 
-    static{
-        System.loadLibrary("BaiduMapSDK_base_v6_4_0");
-        System.loadLibrary("app_BaiduMapBaselib");
-        System.loadLibrary("locSDK8a");
-        System.loadLibrary("aime");
-        System.loadLibrary("app_BaiduMapApplib");
-        System.loadLibrary("app_BaiduMapBaselib");
-        System.loadLibrary("app_BaiduNaviApplib");
-        System.loadLibrary("app_BaiduPanoramaAppLib");
-        System.loadLibrary("BaiduMapSDK_bikenavi_v6_4_0");
-        System.loadLibrary("BaiduMapSDK_map_for_bikenavi_v6_4_0");
-        System.loadLibrary("bd_etts");
-        System.loadLibrary("BDSpeechDecoder_V1");
-        System.loadLibrary("crypto");
-        System.loadLibrary("gnustl_shared");
-        System.loadLibrary("indoor");
-        System.loadLibrary("mpcr");
-        System.loadLibrary("ssl");
-        System.loadLibrary("app_BaiduVIlib");
-    }
+//    static{
+//        System.loadLibrary("BaiduMapSDK_base_v6_4_0");
+//        System.loadLibrary("locSDK8a");
+//        System.loadLibrary("aime");
+//        System.loadLibrary("app_BaiduMapApplib");
+//        System.loadLibrary("app_BaiduMapBaselib");
+//        System.loadLibrary("app_BaiduNaviApplib");
+//        System.loadLibrary("app_BaiduPanoramaAppLib");
+//        System.loadLibrary("BaiduMapSDK_bikenavi_v6_4_0");
+//        System.loadLibrary("BaiduMapSDK_map_for_bikenavi_v6_4_0");
+//        System.loadLibrary("bd_etts");
+//        System.loadLibrary("BDSpeechDecoder_V1");
+//        System.loadLibrary("crypto");
+//        System.loadLibrary("gnustl_shared");
+//        System.loadLibrary("indoor");
+//        System.loadLibrary("mpcr");
+//        System.loadLibrary("ssl");
+//        System.loadLibrary("app_BaiduVIlib");
+//    }
 }

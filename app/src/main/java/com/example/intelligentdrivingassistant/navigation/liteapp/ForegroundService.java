@@ -21,7 +21,7 @@ import androidx.core.app.NotificationCompat;
 public class ForegroundService extends Service {
 
     private static final String TAG = "ForegroundService";
-    private static final int RES_ID = R.layout.activity_lite;
+    private static final int RES_ID = R.layout.fragment_navigation;
 
     @Override
     public IBinder onBind(Intent intent) {

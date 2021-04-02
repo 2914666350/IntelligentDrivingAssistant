@@ -56,7 +56,7 @@ import com.baidu.location.*;
 import com.example.intelligentdrivingassistant.navigation.carnavi.CarNaviActivity;
 import com.example.intelligentdrivingassistant.navigation.carnavi.DemoExtGpsActivity;
 import com.example.intelligentdrivingassistant.navigation.carnavi.DemoGuideActivity;
-import com.example.intelligentdrivingassistant.navigation.carnavi.DemoMainActivity;
+
 import com.example.intelligentdrivingassistant.navigation.carnavi.util.NormalUtils;
 import com.example.intelligentdrivingassistant.navigation.liteapp.ForegroundService;
 

@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     }
     static{
         System.loadLibrary("BaiduMapSDK_base_v6_4_0");
-        System.loadLibrary("app_BaiduMapBaselib");
         System.loadLibrary("locSDK8a");
         System.loadLibrary("aime");
         System.loadLibrary("app_BaiduMapApplib");
