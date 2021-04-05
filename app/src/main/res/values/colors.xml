@@ -21,4 +21,11 @@
     <color name="blue_text">#ff007aff</color>
     <color name="vertical_sep_color">#ffcccccc</color>
 
+    <!--find-->
+    <color name="color_Lucency">#00000000</color>
+    <color name="color_White">#FFFFFF</color>
+    <color name="color_Background">#F5F5F5</color>
+    <color name="color_MinorTextColor">#FF888888</color>
+    <color name="color_MainTextColor">#000000</color>
+    <color name="thinkblue">#99CCFF</color>
 </resources>

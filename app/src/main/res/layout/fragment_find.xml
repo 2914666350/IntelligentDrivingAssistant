@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/imageButtonFind"
         android:layout_width="191dp"
         android:layout_height="181dp"
         android:scaleType="fitXY"
@@ -39,6 +39,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/imageButtonFind" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
