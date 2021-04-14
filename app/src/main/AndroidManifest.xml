@@ -54,7 +54,7 @@
         <activity android:name=".navigation.carnavi.CarNaviActivity" />
         <activity android:name=".music.MusicMainActivity" />
         <activity android:name=".ForgotPwdActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".home.wakeup.ActivityWakeUpRecog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -73,6 +73,7 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="2tGWBBLkqaghyGqMuIC4fh3XNZke1hfO" />
 
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -84,6 +85,8 @@
         <activity android:name=".music.MusicFind" />
         <activity android:name=".find.FindActivity"/>
         <activity android:name=".find.ContentActivity"/>
+        <activity android:name=".home.wakeup.ActivityWakeUp"/>
+        <activity android:name=".MainActivity"/>
         <activity android:name=".navigation.carnavi.DemoExtGpsActivity" />
         <activity android:name=".navigation.carnavi.DemoGuideActivity" />
     </application>
