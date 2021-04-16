@@ -10,7 +10,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.example.intelligentdrivingassistant.find.FindFragment;
+import com.example.intelligentdrivingassistant.music.MusicFragment;
 import com.example.intelligentdrivingassistant.music.RequestSongInfoInterceptor;
+import com.example.intelligentdrivingassistant.navigation.NavigationFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.lzx.starrysky.StarrySky;
 import com.lzx.starrysky.StarrySkyConfig;
@@ -37,6 +40,22 @@ public class MainActivity extends AppCompatActivity {
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        /**语音助手**/
+        int StringId = getIntent().getIntExtra("id", 0);
+        if (StringId == 1) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment,new MusicFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }else if (StringId == 2) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment,new NavigationFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
+
         /**音乐**/
         Intent intent=getIntent();
         int id=intent.getIntExtra("id",-1);
@@ -55,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         StarrySky.init(getApplication(), config, null);
     }
+
+
     static{
         System.loadLibrary("BaiduMapSDK_base_v6_4_0");
         System.loadLibrary("locSDK8a");

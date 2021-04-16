@@ -171,7 +171,6 @@ public class FindActivity extends AppCompatActivity {
         });
 
         requestNew(ITEM_SOCIETY);
-
     }
 
     /**

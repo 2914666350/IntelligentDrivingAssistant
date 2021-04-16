@@ -2,6 +2,7 @@ package com.example.intelligentdrivingassistant.home;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,12 +28,10 @@ public class ControlFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.control_fragment, container, false);
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ControlViewModel.class);
         // TODO: Use the ViewModel
     }
-
 }

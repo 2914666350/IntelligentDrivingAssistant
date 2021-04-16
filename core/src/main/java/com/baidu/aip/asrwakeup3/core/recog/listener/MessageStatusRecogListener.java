@@ -1,8 +1,11 @@
 package com.baidu.aip.asrwakeup3.core.recog.listener;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.baidu.aip.asrwakeup3.core.recog.RecogResult;
 import com.baidu.speech.asr.SpeechConstant;
 
@@ -18,6 +21,9 @@ public class MessageStatusRecogListener extends StatusRecogListener {
     private boolean needTime = true;
 
     private static final String TAG = "MesStatusRecogListener";
+
+    private LocalBroadcastManager localBroadcastManager;
+
 
     public MessageStatusRecogListener(Handler handler) {
         this.handler = handler;
@@ -55,6 +61,7 @@ public class MessageStatusRecogListener extends StatusRecogListener {
     public void onAsrFinalResult(String[] results, RecogResult recogResult) {
         super.onAsrFinalResult(results, recogResult);
         String message = "识别结束，结果是”" + results[0] + "”";
+
         sendStatusMessage(SpeechConstant.CALLBACK_EVENT_ASR_PARTIAL,
                 message + "；原始json：" + recogResult.getOrigalJson());
         if (speechEndTime > 0) {
@@ -66,6 +73,7 @@ public class MessageStatusRecogListener extends StatusRecogListener {
         speechEndTime = 0;
         sendMessage(message, status, true);
     }
+
 
     @Override
     public void onAsrFinishError(int errorCode, int subErrorCode, String descMessage,
@@ -154,7 +162,8 @@ public class MessageStatusRecogListener extends StatusRecogListener {
             return;
         }
         Message msg = Message.obtain();
-        msg.what = what;
+//        msg.what = what;
+        msg.what= what;
         msg.arg1 = status;
         if (highlight) {
             msg.arg2 = 1;

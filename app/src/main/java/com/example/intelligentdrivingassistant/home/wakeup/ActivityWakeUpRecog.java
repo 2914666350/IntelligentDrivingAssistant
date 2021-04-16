@@ -1,8 +1,14 @@
 package com.example.intelligentdrivingassistant.home.wakeup;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 
+import com.example.intelligentdrivingassistant.MainActivity;
 import com.example.intelligentdrivingassistant.R;
 import com.baidu.aip.asrwakeup3.core.recog.IStatus;
 import com.baidu.aip.asrwakeup3.core.recog.MyRecognizer;
@@ -11,6 +17,9 @@ import com.baidu.aip.asrwakeup3.core.recog.listener.MessageStatusRecogListener;
 import com.baidu.aip.asrwakeup3.core.wakeup.listener.IWakeupListener;
 import com.baidu.aip.asrwakeup3.core.wakeup.listener.RecogWakeupListener;
 import com.baidu.speech.asr.SpeechConstant;
+import com.example.intelligentdrivingassistant.find.FindActivity;
+import com.example.intelligentdrivingassistant.music.MusicFragment;
+import com.example.intelligentdrivingassistant.navigation.NavigationFragment;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,7 +48,6 @@ public class ActivityWakeUpRecog extends ActivityWakeUp implements IStatus {
      *
      */
     private int backTrackInMs = 1500;
-
     public ActivityWakeUpRecog() {
         super(R.raw.recog_wakeup);
     }
@@ -54,11 +62,36 @@ public class ActivityWakeUpRecog extends ActivityWakeUp implements IStatus {
 
         IWakeupListener listener = new RecogWakeupListener(handler);
         myWakeup.setEventListener(listener); // 替换原来的 listener
+
     }
 
     @Override
     protected void handleMsg(Message msg) {
         super.handleMsg(msg);
+        switch (msg.what) { // 处理MessageStatusRecogListener中的状态回调
+            case STATUS_FINISHED:
+                if (msg.arg2 == 1) {
+                    txtResult.setText(msg.obj.toString());
+                    String s=txtResult.getText().toString();
+                    Log.d(TAG, "handleMsg: "+s.substring(9,18));
+                    if(s.startsWith("小杜你好，打开音乐",9)){
+                        skipTo(1);
+                        Log.d(TAG, "music: 打开音乐");
+                    }else if(s.startsWith("小杜你好，打开导航",9)){
+                        skipTo(2);
+                    }else if (s.startsWith("小杜你好，打开新闻",9)){
+                        Intent intent = new Intent();
+                        intent.setClass(ActivityWakeUpRecog.this, FindActivity.class);
+                        startActivity(intent);
+                    }
+                }
+                break;
+            case STATUS_NONE:
+            case STATUS_READY:
+            case STATUS_SPEAKING:
+            default:
+                break;
+        }
         if (msg.what == STATUS_WAKEUP_SUCCESS) { // 唤醒词识别成功的回调，见RecogWakeupListener
             // 此处 开始正常识别流程
             Map<String, Object> params = new LinkedHashMap<String, Object>();
@@ -74,6 +107,13 @@ public class ActivityWakeUpRecog extends ActivityWakeUp implements IStatus {
             myRecognizer.cancel();
             myRecognizer.start(params);
         }
+    }
+
+    private void skipTo(int id){
+        Intent intent = new Intent();
+        intent.setClass(ActivityWakeUpRecog.this, MainActivity.class);
+        intent.putExtra("id",id);
+        startActivity(intent);
     }
 
     @Override

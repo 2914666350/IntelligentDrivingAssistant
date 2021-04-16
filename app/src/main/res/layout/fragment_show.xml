@@ -7,6 +7,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageButton
+        android:id="@+id/imageButtonHome"
+        android:layout_width="191dp"
+        android:layout_height="181dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/audioImage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.276" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="200dp"
+        android:layout_height="57dp"
+        android:text="点击使用语音助手"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageButtonHome" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

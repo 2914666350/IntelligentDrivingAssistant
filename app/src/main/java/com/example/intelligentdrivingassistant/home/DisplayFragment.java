@@ -1,49 +1,44 @@
 package com.example.intelligentdrivingassistant.home;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.baidu.aip.asrwakeup3.core.inputstream.InFileStream;
 import com.baidu.aip.asrwakeup3.core.recog.IStatus;
+import com.baidu.aip.asrwakeup3.core.util.MyLogger;
 import com.example.intelligentdrivingassistant.R;
 import com.example.intelligentdrivingassistant.home.wakeup.ActivityWakeUp;
 import com.example.intelligentdrivingassistant.home.wakeup.ActivityWakeUpRecog;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+
 public class DisplayFragment extends Fragment {
 
-    TextView ttCarPressureLR;
-    TextView ttCarPressureLF;
-    TextView ttCarPressureRF;
-    TextView ttCarPressureRR;
-//    TextView ttCarStartSate;
-//    TextView ttCarWindow;
-//    TextView ttCarLock;
-//    TextView ttCarRemainPower;
-    TextView ttCarPower;
-//    TextView ttCarTravelNum;
-    TextView ttCarKilometer;
-    ImageView imgDoorLF;
-    ImageView imgDoorLR;
-    ImageView imgDoorRF;
-    ImageView imgDoorRR;
-    ImageView imgDoorReal;
-    ImageView imgCarStartState;
-    ImageView imgCarWindow;
-    ImageView imgCarLock;
-
+private ImageButton imageButtonHome;
     public DisplayFragment(){
-
     }
 
     @SuppressLint("FragmentLiveDataObserve")
@@ -51,10 +46,16 @@ public class DisplayFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View displayRoot = inflater.inflate(R.layout.fragment_show,container,false);
-        Intent i = new Intent();
-        i.setClass(getActivity(), ActivityWakeUpRecog.class);
-        startActivity(i);
+         View displayRoot = inflater.inflate(R.layout.fragment_show,container,false);
+         imageButtonHome= displayRoot.findViewById(R.id.imageButtonHome);
+
+         imageButtonHome.setOnClickListener(view ->{
+             Intent intent = new Intent();
+             intent.setClass(getActivity(),ActivityWakeUpRecog.class);
+             startActivity(intent);
+         });
+
+
         return displayRoot;
     }
 
