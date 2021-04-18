@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "createFragment: is called");
                 switch (position){
                     case 0: return new DisplayFragment();
-                    case 1: return new ControlFragment();
+//                    case 1: return new ControlFragment();
                     default: return null;
                 }
             }
@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "onConfigureTab: is called");
                 switch (position){
                     case 0: tab.setText("显示");break;
-                    case 1: tab.setText("控制");break;
+//                    case 1: tab.setText("控制");break;
                 }
             }
         }).attach();

@@ -31,7 +31,7 @@ public class NavFragment extends Fragment {
             public Fragment createFragment(int position) {
                 switch (position){
                     case 0: return new NavigationFragment();
-                    case 1: return new RouteRecyclerViewFragment();
+//                    case 1: return new RouteRecyclerViewFragment();
                     default: return null;
                 }
             }
@@ -47,8 +47,8 @@ public class NavFragment extends Fragment {
                 switch (position){
                     case 0:
                         tab.setText("导航寻车");break;
-                    case 1:
-                        tab.setText("行驶记录");break;
+//                    case 1:
+//                        tab.setText("行驶记录");break;
                 }
             }
         }).attach();
