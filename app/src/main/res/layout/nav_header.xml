@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="张宇豪"
+        android:text="语音播报新闻"
         android:textColor="@color/color_White"
         android:textSize="14sp" />
 

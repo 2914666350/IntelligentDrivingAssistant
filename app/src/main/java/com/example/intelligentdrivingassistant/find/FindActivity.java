@@ -244,77 +244,77 @@ public class FindActivity extends AppCompatActivity {
      * 输入不同的类型选项，返回对应的 URL 链接
      */
     private String response(int itemName){
-        String address = "https://api.tianapi.com/it/?key=44769e152c3c49df9b963373d88ff381&num=10";
+        String address = "https://api.tianapi.com/social/?key=44769e152c3c49df9b963373d88ff381&num=10";
         switch(itemName){
             case ITEM_SOCIETY:
                 break;
             case ITEM_COUNTY:
                 address = address.replaceAll("social","guonei");
-                address="https://api.tianapi.com/it/?key=44769e152c3c49df9b963373d88ff381&num=10";
+                address="https://api.tianapi.com/guonei/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_INTERNATION:
                 address = address.replaceAll("social","world");
-                address="https://api.tianapi.com/it/?key=44769e152c3c49df9b963373d88ff381&num=10";
+                address="https://api.tianapi.com/world/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_FUN:
                 address = address.replaceAll("social","huabian");
-                address="https://api.tianapi.com/it/index/?key=44769e152c3c49df9b963373d88ff381&num=10";
+                address="https://api.tianapi.com/huabian/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_SPORT:
                 address = address.replaceAll("social","tiyu");
-                address="https://api.tianapi.com/it/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/tiyu/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_NBA:
                 address = address.replaceAll("social","nba");
-                address="https://api.tianapi.com/nba/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/nba/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_FOOTBALL:
                 address = address.replaceAll("social","football");
-                address="https://api.tianapi.com/football/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/football/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_TECHNOLOGY:
                 address = address.replaceAll("social","keji");
-                address="https://api.tianapi.com/keji/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/keji/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_WORK:
                 address = address.replaceAll("social","startup");
-                address="https://api.tianapi.com/startup/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/startup/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_APPLE:
                 address = address.replaceAll("social","apple");
-                address="https://api.tianapi.com/apple/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/apple/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_WAR:
                 address = address.replaceAll("social","military");
-                address="https://api.tianapi.com/military/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/military/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_INTERNET:
                 address = address.replaceAll("social","mobile");
-                address="https://api.tianapi.com/mobile/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/mobile/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_TREVAL:
                 address = address.replaceAll("social","travel");
-                address="https://api.tianapi.com/travel/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/travel/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_HEALTH:
                 address = address.replaceAll("social","health");
-                address="https://api.tianapi.com/health/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/health/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_STRANGE:
                 address = address.replaceAll("social","qiwen");
-                address="https://api.tianapi.com/qiwen/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/qiwen/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_LOOKER:
                 address = address.replaceAll("social","meinv");
-                address="https://api.tianapi.com/meinv/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/meinv/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_VR:
                 address = address.replaceAll("social","vr");
-                address="https://api.tianapi.com/vr/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/vr/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             case ITEM_IT:
                 address = address.replaceAll("social","it");
-                address="https://api.tianapi.com/it/?key=339a8b166f397f008236e596616a5f54&num=50&rand=1";
+                address="https://api.tianapi.com/it/?key=44769e152c3c49df9b963373d88ff381&num=10";
                 break;
             default:
         }
