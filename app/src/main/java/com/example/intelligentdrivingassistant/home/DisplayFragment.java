@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 public class DisplayFragment extends Fragment {
 
-private ImageButton imageButtonHome;
+private ImageView imageViewHome;
     public DisplayFragment(){
     }
 
@@ -47,9 +47,9 @@ private ImageButton imageButtonHome;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
          View displayRoot = inflater.inflate(R.layout.fragment_show,container,false);
-         imageButtonHome= displayRoot.findViewById(R.id.imageButtonHome);
+         imageViewHome= displayRoot.findViewById(R.id.imageViewHome);
 
-         imageButtonHome.setOnClickListener(view ->{
+        imageViewHome.setOnClickListener(view ->{
              Intent intent = new Intent();
              intent.setClass(getActivity(),ActivityWakeUpRecog.class);
              startActivity(intent);
